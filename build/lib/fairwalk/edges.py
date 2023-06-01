@@ -29,10 +29,10 @@ class EdgeEmbedder(ABC):
         if not isinstance(edge, tuple) or not len(edge) == 2:
             raise ValueError('edge must be a tuple of two nodes')
 
-        if edge[0] not in self.kv.index_to_key:
+        if edge[0] not in self.kv.index2word:
             raise KeyError('node {} does not exist in given KeyedVectors'.format(edge[0]))
 
-        if edge[1] not in self.kv.index_to_key:
+        if edge[1] not in self.kv.index2word:
             raise KeyError('node {} does not exist in given KeyedVectors'.format(edge[1]))
 
         return self._embed(edge)
@@ -43,10 +43,10 @@ class EdgeEmbedder(ABC):
         :return: Edge embeddings
         """
 
-        edge_generator = combinations_with_replacement(self.kv.index_to_key, r=2)
+        edge_generator = combinations_with_replacement(self.kv.index2word, r=2)
 
         if not self.quiet:
-            vocab_size = len(self.kv)
+            vocab_size = len(self.kv.vocab)
             total_size = reduce(lambda x, y: x * y, range(1, vocab_size + 2)) / \
                          (2 * reduce(lambda x, y: x * y, range(1, vocab_size)))
 
@@ -64,9 +64,10 @@ class EdgeEmbedder(ABC):
 
         # Build KV instance
         edge_kv = KeyedVectors(vector_size=self.kv.vector_size)
-        edge_kv.add_vectors(
-            keys=tokens,
+        edge_kv.add(
+            entities=tokens,
             weights=features)
+
         return edge_kv
 
 
