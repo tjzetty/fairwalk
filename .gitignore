@@ -1,6 +1,10 @@
 # Compiled python modules.
 *.pyc
 
+# Generated Files
+*.emb
+*.model
+
 # Setuptools distribution folder.
 /dist/
 
